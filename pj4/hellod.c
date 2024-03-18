@@ -37,10 +37,6 @@ int my_init(void)
     strcpy(Color->data, "green");
     list_add_tail(&Color->list, &color_list);
 
-    Color = kmalloc(sizeof(*Color), GFP_KERNEL);
-    strcpy(Color->data, "black");
-    list_add_tail(&Color->list, &color_list);
-
     // Traverse the linked list and output its contents to the kernel log buffer.
 
     list_for_each_entry(ptr, &color_list, list)
