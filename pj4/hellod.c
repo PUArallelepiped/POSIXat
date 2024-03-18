@@ -23,27 +23,22 @@ int my_init(void)
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
     strcpy(Color->data, "red");
-    INIT_LIST_HEAD(&Color->list);
     list_add_tail(&Color->list, &color_list);
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
     strcpy(Color->data, "blue");
-    INIT_LIST_HEAD(&Color->list);
     list_add_tail(&Color->list, &color_list);
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
     strcpy(Color->data, "yellow");
-    INIT_LIST_HEAD(&Color->list);
     list_add_tail(&Color->list, &color_list);
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
     strcpy(Color->data, "green");
-    INIT_LIST_HEAD(&Color->list);
     list_add_tail(&Color->list, &color_list);
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
     strcpy(Color->data, "black");
-    INIT_LIST_HEAD(&Color->list);
     list_add_tail(&Color->list, &color_list);
 
     // Traverse the linked list and output its contents to the kernel log buffer.
@@ -64,6 +59,7 @@ void my_exit(void)
     printk(KERN_INFO "Removing Module\n");
 
     // In the module exit point, delete the elements from the linked list and return the free memory back to the kernel.
+
     list_for_each_entry_safe(ptr, next, &color_list, list)
     {
 
