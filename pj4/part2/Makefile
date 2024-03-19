@@ -1,4 +1,4 @@
-obj-m:= hellod.o
+obj-m:= collatz.o
 
 kernel_DIR:= /usr/src/linux-headers-5.4.0-148-generic/
 

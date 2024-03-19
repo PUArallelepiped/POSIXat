@@ -17,7 +17,7 @@ int my_init(void)
     struct color *Color;
     struct color *ptr;
     // Invoke the dmesg command to ensure that the list is properly constructed once the kernel module has been loaded.
-    printk(KERN_INFO "Loading Module\n");
+    printk("Color kernel module init\n");
 
     // In the module entry point, create a linked list containing four struct color elements.
 
@@ -39,11 +39,16 @@ int my_init(void)
 
     // Traverse the linked list and output its contents to the kernel log buffer.
 
+    printk("color link list : \n");
+
     list_for_each_entry(ptr, &color_list, list)
     {
 
-        printk(KERN_INFO "data:%s\n", ptr->data);
+        printk(KERN_CONT "%s -> ", ptr->data);
     }
+
+    printk(KERN_CONT "NULL\n");
+
     return 0;
 }
 
@@ -52,7 +57,6 @@ void my_exit(void)
     static LIST_HEAD(color_list);
     struct color *ptr = NULL, *next = NULL;
     // Again, invoke the dmesg command to check that the list has been removed once the kernel module has been unloaded.
-    printk(KERN_INFO "Removing Module\n");
 
     // In the module exit point, delete the elements from the linked list and return the free memory back to the kernel.
 
@@ -69,8 +73,10 @@ void my_exit(void)
     }
     else
     {
-        printk("no");
+        printk("color_list isn't empty\n");
     }
+
+    printk("Color kernel module exit\n");
 }
 
 module_init(my_init);
