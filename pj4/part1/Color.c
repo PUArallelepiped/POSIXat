@@ -47,7 +47,7 @@ int my_init(void)
         printk(KERN_CONT "%s -> ", ptr->data);
     }
 
-    printk(KERN_CONT "NULL\n");
+    printk(KERN_CONT "NULL \n");
 
     return 0;
 }
