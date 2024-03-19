@@ -22,7 +22,7 @@ int my_init(void)
     // In the module entry point, create a linked list containing four struct color elements.
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
-    strcpy(Color->data, "red ");
+    strcpy(Color->data, "red  ");
     list_add_tail(&Color->list, &color_list);
 
     Color = kmalloc(sizeof(*Color), GFP_KERNEL);
