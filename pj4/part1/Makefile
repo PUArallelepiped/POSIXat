@@ -6,7 +6,7 @@ PWD := $(shell pwd)
 
 all:
 	make -C $(kernel_DIR) M=$(PWD)
-claen:
+clean:
 	rm *.o *.ko *.mod.c
 .PHONY:
 	clean
