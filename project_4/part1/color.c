@@ -11,9 +11,10 @@ struct color
     struct list_head list;
 };
 
+static LIST_HEAD(color_list);
+
 int my_init(void)
 {
-    static LIST_HEAD(color_list);
     struct color *Color;
     struct color *ptr;
     // Invoke the dmesg command to ensure that the list is properly constructed once the kernel module has been loaded.
@@ -54,11 +55,10 @@ int my_init(void)
 
 void my_exit(void)
 {
-    static LIST_HEAD(color_list);
     struct color *ptr = NULL, *next = NULL;
-    // Again, invoke the dmesg command to check that the list has been removed once the kernel module has been unloaded.
 
     // In the module exit point, delete the elements from the linked list and return the free memory back to the kernel.
+    printk("Free color_list and Check if the linked list is empty or not\n");
 
     list_for_each_entry_safe(ptr, next, &color_list, list)
     {
@@ -76,10 +76,10 @@ void my_exit(void)
         printk("color_list isn't empty\n");
     }
 
+    // Again, invoke the dmesg command to check that the list has been removed once the kernel module has been unloaded.
     printk("Color kernel module exit\n");
 }
 
 module_init(my_init);
 module_exit(my_exit);
-
 MODULE_LICENSE("GPL");

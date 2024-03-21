@@ -17,11 +17,12 @@ struct Collatz
     struct list_head list;
 };
 
+static LIST_HEAD(Collatz_list);
+
 int collatz_count(int n)
 {
     // Your module will then generate and store the sequence in a kernel linked list when the module is loaded.
 
-    static LIST_HEAD(Collatz_list);
     struct Collatz *Collatz;
     struct Collatz *ptr;
 
@@ -75,11 +76,10 @@ static int __init my_test_init(void)
 
 static void __exit my_test_exit(void)
 {
-    static LIST_HEAD(Collatz_list);
     struct Collatz *ptr = NULL, *next = NULL;
-    // In the module exit point, delete the contents of the list and return the free memory back to the kernel.
 
-    printk("free Collatz_list and Check if the linked list is empty or not\n");
+    // In the module exit point, delete the contents of the list and return the free memory back to the kernel.
+    printk("Free Collatz_list and Check if the linked list is empty or not\n");
     list_for_each_entry_safe(ptr, next, &Collatz_list, list)
     {
 
