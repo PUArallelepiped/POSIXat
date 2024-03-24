@@ -47,18 +47,29 @@ void free_history(struct history *head) {
     free(temp);
   }
 }
+void free_history_tail(struct history *head) {
+  struct history *current = head;
+  struct history *prev = NULL;
+  while (current->next != NULL) {
+    prev = current;
+    current = current->next;
+  }
+  free(current);
+  prev->next = NULL;
+}
 
-void GetNode(int n, struct history *head) {
+char *GetNode(int n, struct history *head) {
   struct history *current = head;
   int i = 0;
   while (current != NULL) {
     if (i == n) {
       printf("%s\n", current->command);
-      return;
+      return current->command;
     }
     i++;
     current = current->next;
   }
+  return "";
 }
 
 int main(int argc, char *argv[]) {
@@ -66,9 +77,30 @@ int main(int argc, char *argv[]) {
   struct history *head = NULL;
 
   while (1) {
-    printf("Sus >");
+    printf("Sus > ");
     char input[MAX_LINE];
+    char checked_input[MAX_LINE];
     fgets(input, MAX_LINE, stdin);
+    if (strlen(input) >= 2 && input[0] == '$') {
+      int n = atoi(&input[1]);
+      strcpy(checked_input, GetNode(n, head));
+      if (strcmp(checked_input, "") == 0) {
+        printf("No such command in history\n");
+        continue;
+      }
+    } else {
+      if (strcmp(input, "") == 0) {
+        continue;
+      }
+      strcpy(checked_input, input);
+      add_history(&head, checked_input);
+    }
+    print_history(head);
+    if (history_length(head) > MAX_HISTORY) {
+      free_history_tail(head);
+    }
+    // printf("checked_input: %s\n", checked_input);
+    // printf("input: %s\n", input);
 
     int fd[2];
     if (pipe(fd) == -1) {
@@ -96,9 +128,11 @@ int main(int argc, char *argv[]) {
         return 1;
       } else {
         execvp(args[0], args);
+        perror("execvp");
+        return 0;
       }
     } else {
-      write(fd[1], &input, sizeof(input));
+      write(fd[1], &checked_input, sizeof(checked_input));
       int exit_status;
       wait(&exit_status);
       close(fd[1]);
@@ -106,7 +140,7 @@ int main(int argc, char *argv[]) {
       printf("exit status: %d\n", exit_status);
       if (exit_status != 0) {
         printf("end shell\n");
-        break;
+        return 0;
       }
     }
   }
