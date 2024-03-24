@@ -95,12 +95,9 @@ int main(int argc, char *argv[]) {
       strcpy(checked_input, input);
       add_history(&head, checked_input);
     }
-    print_history(head);
     if (history_length(head) > MAX_HISTORY) {
       free_history_tail(head);
     }
-    // printf("checked_input: %s\n", checked_input);
-    // printf("input: %s\n", input);
 
     int fd[2];
     if (pipe(fd) == -1) {
