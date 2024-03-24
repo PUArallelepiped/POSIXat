@@ -25,3 +25,7 @@ max length is 10
 
 - `sus > $0` to run past 1st command
 - `sus > $1` to run past 2nd command
+
+#### screenshot
+
+![result](img/history_shell.png)
