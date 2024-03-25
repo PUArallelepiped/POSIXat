@@ -10,7 +10,7 @@ command in a separate process
 
 #### start
 
-- `gcc refactor_shell.c ; ./a.out`
+- `gcc history_shell.c ; ./a.out`
 
 #### run command
 
