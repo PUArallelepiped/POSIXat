@@ -10,22 +10,26 @@ command in a separate process
 
 #### start
 
-- `gcc history_shell.c -o history_shell.o ; ./history_shell.o`
+- `gcc refactor_shell.c ; ./a.out`
 
 #### run command
 
 ##### run any command on your computer
 
-- `sus > cal`
-- `sus > cal -3`
+- `osh> cal`
+- `osh> cal -3`
 
 ##### run history command
 
-max length is 10
+- `osh> !!` to run last command
 
-- `sus > $0` to run past 1st command
-- `sus > $1` to run past 2nd command
+##### pipe
+
+- `osh> cal | grep Su` to run cal and as input to grep
+
+##### redirect input and output
+
+- `osh> cal > test.txt` to run cal and as input to wirte in test.txt
+- `osh> grep Su < test.txt` to let test.txt as input of grep
 
 #### screenshot
-
-![result](img/history_shell.png)

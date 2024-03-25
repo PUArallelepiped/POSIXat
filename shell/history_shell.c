@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <fcntl.h>
 #include <linux/limits.h>
 #include <stdio.h>
@@ -8,6 +9,29 @@
 #include <unistd.h>
 #define MAX_LINE 80
 
+char *strip_string(char *str) {
+  // Trim leading whitespace
+  while (isspace((unsigned char)*str)) {
+    str++;
+  }
+
+  // If the entire string is whitespace, str will point to '\0'
+  if (*str == '\0') {
+    return str;
+  }
+
+  // Trim trailing whitespace
+  char *end = str + strlen(str) - 1;
+  while (end > str && isspace((unsigned char)*end)) {
+    end--;
+  }
+
+  // Null-terminate the trimmed string
+  *(end + 1) = '\0';
+
+  return str;
+}
+
 void split(char **arr, char *str, const char *del, int *len) {
   char *s = strtok(str, del);
   *len = 0;
@@ -16,6 +40,7 @@ void split(char **arr, char *str, const char *del, int *len) {
     s = strtok(NULL, del);
     *len += 1;
   }
+  arr[*len] = NULL;
 }
 
 void run_command(char *command) {
@@ -65,7 +90,8 @@ int main(int argc, char *argv[]) {
     strcpy(tmp, input);
     history_command = tmp;
 
-    char *pipe_command[MAX_LINE / 2 + 1]; /* command line arguments */
+    char **pipe_command =
+        malloc(sizeof(char) * MAX_LINE * MAX_LINE); /* command line arguments */
     int len = 0;
     split(pipe_command, input, "<", &len);
     if (len > 1) {
@@ -74,20 +100,23 @@ int main(int argc, char *argv[]) {
         perror("fork");
         return 1;
       } else if (pid == 0) {
-        int filed = open(pipe_command[0], O_CREAT | O_WRONLY | O_TRUNC, 0666);
-        if (dup2(filed, STDOUT_FILENO) == -1) {
+        pipe_command[1] = strip_string(pipe_command[1]);
+        int filed = open(pipe_command[1], O_RDONLY, 0666);
+        if (dup2(filed, STDIN_FILENO) == -1) {
           perror("dup2");
           exit(EXIT_FAILURE);
         }
         close(filed);
-        run_command(pipe_command[1]);
+        run_command(pipe_command[0]);
 
       } else {
         // todo
         wait(NULL);
       }
+      free(pipe_command);
       continue;
     }
+
     split(pipe_command, input, ">", &len);
     if (len > 1) {
       pid_t pid = fork();
@@ -95,6 +124,7 @@ int main(int argc, char *argv[]) {
         perror("fork");
         return 1;
       } else if (pid == 0) {
+        pipe_command[1] = strip_string(pipe_command[1]);
         int filed = open(pipe_command[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
         if (dup2(filed, STDOUT_FILENO) == -1) {
           perror("dup2");
@@ -107,6 +137,7 @@ int main(int argc, char *argv[]) {
         // todo
         wait(NULL);
       }
+      free(pipe_command);
       continue;
     }
 
@@ -152,6 +183,7 @@ int main(int argc, char *argv[]) {
         wait(NULL);
       }
       // do pipe
+      free(pipe_command);
       continue;
     }
 
@@ -160,6 +192,7 @@ int main(int argc, char *argv[]) {
     if (len > 1) {
       wait_run_command(history_command, 0);
       // do background
+      free(pipe_command);
       continue;
     }
 
@@ -172,10 +205,12 @@ int main(int argc, char *argv[]) {
         // do history
         wait_run_command(history_command, 1);
       }
+      free(pipe_command);
       continue;
     }
     // normal
     wait_run_command(input, 1);
+    free(pipe_command);
   }
 
   //   pid_t pid = fork();
