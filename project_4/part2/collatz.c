@@ -7,9 +7,9 @@
 
 // Design a kernel module named collatz that is passed an initial value as a module parameter.
 
-static int p = 100;
-module_param(p, int, 0644);
-MODULE_PARM_DESC(p, "test for module parameter");
+static int start = 100;
+module_param(start, int, 0);
+MODULE_PARM_DESC(start, "test for module parameter");
 
 struct Collatz
 {
@@ -67,9 +67,9 @@ static int __init my_test_init(void)
 {
 
     printk("collatz kernel module init\n");
-    printk("module patameter = %d\n", p);
+    printk("module patameter = %d\n", start);
 
-    collatz_count(p);
+    collatz_count(start);
 
     return 0;
 }
