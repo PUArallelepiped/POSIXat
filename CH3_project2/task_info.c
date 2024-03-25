@@ -47,7 +47,7 @@ ssize_t proc_read(struct file *file, char  __user *usr_buf,size_t count, loff_t 
         printk(KERN_INFO "task is NULL\n");
         return 0;
     }
-    rv = sprintf(buffer, "command = [%s], pid = [%d], state = [%ld]\n", task->comm, task->pid, task->stats);
+    rv = sprintf(buffer, "command = [%s], pid = [%d], state = [%c]\n", task->comm, task->pid, task_state_to_char(task));
     completed = 1;
     copy_to_user(usr_buf, buffer, rv);
     return rv;
