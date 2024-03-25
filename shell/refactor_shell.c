@@ -57,7 +57,8 @@ int main(int argc, char *argv[]) {
     fgets(input, MAX_LINE, stdin);
     //   run_command(input);
     if (strcmp(input, "exit\n") == 0) {
-      break;
+      should_run = 0;
+      continue;
     }
 
     char tmp[MAX_LINE];
@@ -66,6 +67,27 @@ int main(int argc, char *argv[]) {
 
     char *pipe_command[MAX_LINE / 2 + 1]; /* command line arguments */
     int len = 0;
+    split(pipe_command, input, "<", &len);
+    if (len > 1) {
+      pid_t pid = fork();
+      if (pid == -1) {
+        perror("fork");
+        return 1;
+      } else if (pid == 0) {
+        int filed = open(pipe_command[0], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+        if (dup2(filed, STDOUT_FILENO) == -1) {
+          perror("dup2");
+          exit(EXIT_FAILURE);
+        }
+        close(filed);
+        run_command(pipe_command[1]);
+
+      } else {
+        // todo
+        wait(NULL);
+      }
+      continue;
+    }
     split(pipe_command, input, ">", &len);
     if (len > 1) {
       pid_t pid = fork();
