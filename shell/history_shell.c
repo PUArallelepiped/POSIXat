@@ -86,6 +86,17 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
+    const char *result = strstr(input, "!!");
+    if (result != NULL) {
+      if (history_command == NULL) {
+        printf("No command in history.\n");
+      } else {
+        printf("history command: %s\n", history_command);
+        // do history
+        wait_run_command(history_command, 1);
+      }
+      continue;
+    }
     char tmp[MAX_LINE];
     strcpy(tmp, input);
     history_command = tmp;
@@ -196,18 +207,6 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    const char *result = strstr(input, "!!");
-    if (result != NULL) {
-      if (history_command == NULL) {
-        printf("No command in history.\n");
-      } else {
-        printf("history command: %s\n", history_command);
-        // do history
-        wait_run_command(history_command, 1);
-      }
-      free(pipe_command);
-      continue;
-    }
     // normal
     wait_run_command(input, 1);
     free(pipe_command);

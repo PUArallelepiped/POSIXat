@@ -33,3 +33,4 @@ command in a separate process
 - `osh> grep Su < test.txt` to let test.txt as input of grep
 
 #### screenshot
+![shell](./img/shell.png)
