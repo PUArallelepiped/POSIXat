@@ -69,7 +69,15 @@ static int __init my_test_init(void)
     printk("collatz kernel module init\n");
     printk("module patameter = %d\n", start);
 
-    collatz_count(start);
+    if (start > 0)
+    {
+
+        collatz_count(start);
+    }
+    else
+    {
+        printk(KERN_WARNING "error, num < 0\n");
+    }
 
     return 0;
 }
