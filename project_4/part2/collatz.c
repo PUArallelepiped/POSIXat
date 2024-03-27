@@ -76,7 +76,7 @@ static int __init my_test_init(void)
     }
     else
     {
-        printk(KERN_WARNING "error, num < 0\n");
+        printk(KERN_WARNING "error, start < 0\n");
     }
 
     return 0;
