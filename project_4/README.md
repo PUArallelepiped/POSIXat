@@ -17,9 +17,17 @@ color elements.
 
 ```
 sudo insmod color.ko //loads the "color.ko" kernel module into the Linux kernel
-sudo rmmod color.ko //remove kernel module
-dmesg //displays the kernel ring buffer
+sudo dmesg
 ```
+
+![alt text](screenshot/image-2.png)
+
+```
+sudo rmmod color.ko //remove kernel module
+sudo dmesg
+```
+
+![alt text](screenshot/image-3.png)
 
 #### Part II – Parameter Passing
 
@@ -38,8 +46,16 @@ dmesg //displays the kernel ring buffer
 -Again, use dmesg to check that the list has been removed once the kernel module has been unloaded.
 
 ```
-sudo insmod collatz.ko //loads the "color.ko" kernel module into the Linux kernel , default p=100
-sudo insmod collatz.ko p=11 //loads the "color.ko" kernel module into the Linux kernel , set p=11
-sudo rmmod collatz.ko //remove kernel module
-dmesg //displays the kernel ring buffer
+sudo insmod collatz.ko //loads the "collatz.ko" kernel module into the Linux kernel , default start=100
+sudo insmod collatz.ko start=11 //loads the "collatz.ko" kernel module into the Linux kernel , set start=11
+sudo dmesg
 ```
+
+![alt text](screenshot/image.png)
+
+```
+sudo rmmod collatz.ko //remove kernel module
+sudo dmesg
+```
+
+![alt text](screenshot/image-1.png)

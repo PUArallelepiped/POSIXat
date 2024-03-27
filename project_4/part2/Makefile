@@ -8,6 +8,6 @@ PWD := $(shell pwd)
 all:
 	make -C $(kernel_DIR) M=$(PWD)
 clean:
-	rm *.o *.ko *.mod *.mod.c *.order *.symvers
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 .PHONY:
 	clean

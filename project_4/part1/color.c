@@ -7,7 +7,10 @@
 
 struct color
 {
-    char data[100];
+    int red;
+    int blue;
+    int green;
+    int white;
     struct list_head list;
 };
 
@@ -15,28 +18,33 @@ static LIST_HEAD(color_list);
 
 int my_init(void)
 {
-    struct color *Color;
+    struct color *violet;
     struct color *ptr;
     // Invoke the dmesg command to ensure that the list is properly constructed once the kernel module has been loaded.
     printk("Color kernel module init\n");
 
     // In the module entry point, create a linked list containing four struct color elements.
 
-    Color = kmalloc(sizeof(*Color), GFP_KERNEL);
-    strcpy(Color->data, "red");
-    list_add_tail(&Color->list, &color_list);
+    violet = kmalloc(sizeof(*violet), GFP_KERNEL);
+    violet->red = 138;
+    violet->blue = 43;
+    violet->green = 226;
+    violet->white = 100;
+    list_add_tail(&violet->list, &color_list);
 
-    Color = kmalloc(sizeof(*Color), GFP_KERNEL);
-    strcpy(Color->data, "blue");
-    list_add_tail(&Color->list, &color_list);
+    violet = kmalloc(sizeof(*violet), GFP_KERNEL);
+    violet->red = 120;
+    violet->blue = 20;
+    violet->green = 216;
+    violet->white = 80;
+    list_add_tail(&violet->list, &color_list);
 
-    Color = kmalloc(sizeof(*Color), GFP_KERNEL);
-    strcpy(Color->data, "yellow");
-    list_add_tail(&Color->list, &color_list);
-
-    Color = kmalloc(sizeof(*Color), GFP_KERNEL);
-    strcpy(Color->data, "green");
-    list_add_tail(&Color->list, &color_list);
+    violet = kmalloc(sizeof(*violet), GFP_KERNEL);
+    violet->red = 10;
+    violet->blue = 10;
+    violet->green = 26;
+    violet->white = 90;
+    list_add_tail(&violet->list, &color_list);
 
     // Traverse the linked list and output its contents to the kernel log buffer.
 
@@ -45,7 +53,7 @@ int my_init(void)
     list_for_each_entry(ptr, &color_list, list)
     {
 
-        printk(KERN_CONT "%s -> ", ptr->data);
+        printk(KERN_CONT "{red:%d blue:%d green:%d white:%d }-> ", ptr->red, ptr->blue, ptr->green, ptr->white);
     }
 
     printk(KERN_CONT "NULL\n");
