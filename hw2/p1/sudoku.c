@@ -19,7 +19,7 @@ void checkRow(parameters *data){
     int check[SIZE] = {0};
     for (int i = 0; i < SIZE; i++){
         if (check[sudoku[row][i] - 1] == 1){
-            printf("Row %d is invalid\n", row);
+            printf("Thread %d: Row %d is invalid\n", data->id, row);
             valid[data->id] = 0;
             return;
         }
@@ -33,7 +33,7 @@ void checkCol(parameters *data){
     int check[SIZE] = {0};
     for (int i = 0; i < SIZE; i++){
         if (check[sudoku[i][col] - 1] == 1){
-            printf("Col %d is invalid\n", col);
+            printf("Thread %d: Col %d is invalid\n", data->id, col);
             valid[data->id] = 0;
             return;
         }
@@ -50,7 +50,7 @@ void checkSquare(parameters *data){
     for (int i = row; i < row + 3; i++){
         for (int j = col; j < col + 3; j++){
             if (check[sudoku[i][j] - 1] == 1){
-                printf("Square %d %d is invalid\n", row, col);
+                printf("Thread %d: Square %d %d is invalid\n", data->id, row, col);
                 valid[id] = 0;
                 return;
             }
@@ -60,9 +60,18 @@ void checkSquare(parameters *data){
     printf("Thread %d: Square %d %d is valid\n", data->id, row, col);
 }
 
-int main (){
+int main (int argc, char *argv[]){
+    char *filename;
+    if (argc != 2){
+        printf("Usage: ./sudoku <sudoku.csv>\n");
+        return 0;
+    }
+    else {
+        filename = argv[1];
+    }
+
     // initialize sudoku with file input
-    FILE *file = fopen("sudoku.csv", "r");
+    FILE *file = fopen(filename, "r");
     for (int i = 0; i < SIZE; i++){
         for (int j = 0; j < SIZE; j++){
             fscanf(file, "%d,", &sudoku[i][j]);
@@ -111,17 +120,13 @@ int main (){
     }
 
     // check if sudoku is valid
-    int flag = 1;
     for (int i = 0; i < NUM_THREADS; i++){
         if (valid[i] == 0){
-            flag = 0;
             printf("Sudoku is invalid\n");
             return 0;
         }
     }
-    if (flag == 1){
-        printf("Sudoku is valid\n");
-    }
+    printf("Sudoku is valid\n");
 
     return 0;
 }
