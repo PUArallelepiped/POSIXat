@@ -5,7 +5,7 @@ int next_task(Task *tasks, int num_tasks, int time)
     int task_index = -1;
     for (int i = 0; i < num_tasks; i++)
     {
-        if (tasks[i].burst > 0)
+        if (tasks[i].remain_burst > 0)
         {
             task_index = i;
             break;
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     //     printf("%s %d %d\n", tasks[i].name, tasks[i].priority, tasks[i].burst);
     // }
 
-    int time = 1;
+    int time = 0;
     int remain_task = num_tasks;
     while (remain_task > 0)
     {
@@ -40,13 +40,21 @@ int main(int argc, char *argv[])
 
         if (task_index != -1)
         {
-            printf("time:%3.d task:%s\n", time, tasks[task_index].name);
-            tasks[task_index].burst--;
-            if (tasks[task_index].burst == 0)
+            printf("time:%3.1d task:%s\n", time, tasks[task_index].name);
+
+            tasks[task_index].remain_burst--;
+            if (tasks[task_index].start == -1)
+                tasks[task_index].start = time;
+
+            if (tasks[task_index].remain_burst <= 0)
+            {
+                tasks[task_index].end = time + 1;
                 remain_task--;
+            }
         }
 
         time++;
     }
+    task_detail(tasks, num_tasks, time);
     return 0;
 }
