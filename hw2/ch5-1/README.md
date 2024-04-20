@@ -12,4 +12,4 @@ make
 ## screenshot
 | FCFS                               | SJF                                | priority                           |
 | ---------------------------------- | ---------------------------------- | ---------------------------------- |
-| ![](https://imgur.com/Mk5N9ST.png) | ![](https://imgur.com/K6UeFId.png) | ![](https://imgur.com/FeP3Lww.png) |
+| ![](https://imgur.com/63IrFgV.png) | ![](https://imgur.com/3DBz78M.png) | ![](https://imgur.com/qHq7m3h.png) |
