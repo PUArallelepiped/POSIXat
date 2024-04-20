@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                 enqueue(&current->queue, task_index);
             }
 
-            if (isEmpty(&current->queue) && (tasks[task_index].remain_burst <= 0)) // this periority group finish
+            if (isEmpty(&current->queue) && (tasks[task_index].remain_burst <= 0)) // this priority group finish
             {
                 current = current->next;
                 if (current == NULL)
