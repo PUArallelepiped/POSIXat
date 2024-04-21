@@ -23,7 +23,7 @@ void insertSorted(Node **_head, int _priority)
 
     Node **head = _head;
 
-    // sort with periority
+    // sort with priority
 
     if (*head == NULL || _priority < (*head)->priority)
     {
