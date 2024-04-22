@@ -18,6 +18,6 @@ make
 | ---------------------------------- | ---------------------------------- | ---------------------------------- |
 | ![](https://imgur.com/63IrFgV.png) | ![](https://imgur.com/3DBz78M.png) | ![](https://imgur.com/qHq7m3h.png) |
 
-| RR (quantum = 4)               | priority_RR (quantum = 4)               |
+| RR (quantum = 10)              | priority_RR (quantum = 10)              |
 | ------------------------------ | --------------------------------------- |
 | ![alt text](screenshot/RR.png) | ![alt text](screenshot/priority_RR.png) |
