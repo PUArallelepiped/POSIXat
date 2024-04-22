@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     read_tasks_from_file(argv[1], tasks, &num_tasks);
 
     int time = 0;
-    int quantum = 4;
+    int quantum = 10;
     int remain_task = num_tasks;
     int task_index = 0;
     int count = 0;
