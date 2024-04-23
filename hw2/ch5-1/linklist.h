@@ -25,7 +25,7 @@ void insertSorted(Node **_head, int _priority)
 
     // sort with priority
 
-    if (*head == NULL || _priority < (*head)->priority)
+    if (*head == NULL || _priority > (*head)->priority)
     {
         newNode->next = *head;
         *head = newNode;
@@ -33,7 +33,7 @@ void insertSorted(Node **_head, int _priority)
     }
 
     Node *current = *_head;
-    while (current->next != NULL && current->next->priority < _priority)
+    while (current->next != NULL && current->next->priority > _priority)
     {
         current = current->next;
     }
