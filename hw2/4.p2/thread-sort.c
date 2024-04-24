@@ -89,10 +89,11 @@ int main() {
 
   parameters p1 = {0, SIZE / 2};
   parameters p2 = {SIZE / 2, SIZE};
-  pthread_create(&tid1, &attr, sort, &p1);
-  pthread_join(tid1, NULL);
 
+  pthread_create(&tid1, &attr, sort, &p1);
   pthread_create(&tid2, &attr, sort, &p2);
+
+  pthread_join(tid1, NULL);
   pthread_join(tid2, NULL);
 
   pthread_create(&tid3, &attr, merge, NULL);
