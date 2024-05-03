@@ -28,7 +28,7 @@ void enqueue(int id) {
             break;
         }
     }
-    printf("chair 1: %d, chair 2: %d, chair 3: %d\n", chairs[0], chairs[1], chairs[2]);
+    printf("🪑: %d, 🛋️: %d, 🛏️: %d\n", chairs[0], chairs[1], chairs[2]);
     sem_post(&queue_mutex);
 }
 
@@ -39,7 +39,7 @@ int dequeue() {
         chairs[i] = chairs[i + 1];
     }
     chairs[MAX_CHAIRS - 1] = -1;
-    printf("chair 1: %d, chair 2: %d, chair 3: %d\n", chairs[0], chairs[1], chairs[2]);
+    printf("🪑: %d, 🛋️: %d, 🛏️: %d\n", chairs[0], chairs[1], chairs[2]);
     sem_post(&queue_mutex);
     return id;
 }
@@ -48,34 +48,33 @@ void* student(void* param) {
     int id = *((int*)param);
     sem_wait(&mutex);
     while (1) {
-        printf("Student %d comes\n", id);
+        printf("[ST] Student %d comes\n", id);
         if (ta_sleeping == 1) {
-            printf("Student %d is waking up TA\n", id);
+            printf("[ST] Student %d is waking up TA\n", id);
             ta_sleeping = 0;
             sem_post(&students);
-            printf("Student %d is getting help\n", id);
             sem_post(&mutex);
             break;
         } 
         else if (waiting_students < MAX_CHAIRS) {
             atomic_fetch_add(&waiting_students, 1);
             enqueue(id);
-            printf("Student %d is waiting\n", id);
+            printf("[ST] Student %d is waiting\n", id);
             while (atomic_load(&turn) != id) {
                 sem_post(&mutex);
-                sem_wait(&ta);
+                sleep(1);
                 sem_wait(&mutex);
             }
+            sem_wait(&ta);
             sem_post(&mutex);
-            printf("Student %d is getting help\n", id);
             sem_post(&students);
             atomic_fetch_add(&waiting_students, -1);
             break;
         } 
         else {
-            printf("Student %d is leaving and coming back later\n", id);
+            printf("[ST] Student %d is leaving and coming back later\n", id);
             sem_post(&mutex);
-            sleep(rand() % 5 + 1);
+            sleep(rand() % 5 + 3);
         }
     }
 }
@@ -86,28 +85,27 @@ void* teaching_assistant() {
         sem_wait(&mutex);
         if (atomic_load(&waiting_students) <= 0) {
             ta_sleeping = 1;
-            printf("TA is sleeping\n");
+            printf("[TA] TA is sleeping\n");
             sem_post(&mutex);
             sem_wait(&students);
             // ta_sleeping = 0;
-            printf("TA is waking up\n");
+            printf("[TA] TA is waking up\n");
         }
         else {
-            printf("TA is available\n");
+            printf("[TA] TA is available\n");
             turn = dequeue();
-            printf("is student %d\n", turn);
+            printf("[TA] next student: %d\n", turn);
             sem_post(&ta);
-            printf("TA is waiting for student\n");
+            printf("[TA] TA is waiting for student\n");
             sem_post(&mutex);
             sem_wait(&students);
         }
 
-        printf("TA is helping student %d\n", turn);
+        printf("[TA] TA is helping student %d\n", turn);
         sleep(rand() % 5 + 1);
+        printf("[TA] TA is done helping student %d\n", turn);
         help_students++;
-        printf("helped students: %d\n", help_students);
-        printf("TA is done helping student %d\n", turn);
-        printf("waiting students: %d\n", waiting_students);
+        printf("[TA] helped students: %d\n", help_students);
     }
 }
 
