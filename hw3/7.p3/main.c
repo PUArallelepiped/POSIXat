@@ -49,6 +49,7 @@ void* student(void* param) {
     sem_wait(&mutex);
     while (1) {
         printf("[ST] Student %d comes\n", id);
+        // if TA is sleeping, wake him up
         if (ta_sleeping == 1) {
             printf("[ST] Student %d is waking up TA\n", id);
             ta_sleeping = 0;
@@ -56,10 +57,12 @@ void* student(void* param) {
             sem_post(&mutex);
             break;
         } 
+        // if there are empty chairs, sit and wait
         else if (waiting_students < MAX_CHAIRS) {
             atomic_fetch_add(&waiting_students, 1);
             enqueue(id);
             printf("[ST] Student %d is waiting\n", id);
+            // wait for TA to call, if next turn is not mine, keep waiting
             while (atomic_load(&turn) != id) {
                 sem_post(&mutex);
                 sleep(1);
@@ -71,6 +74,7 @@ void* student(void* param) {
             atomic_fetch_add(&waiting_students, -1);
             break;
         } 
+        // if there are no empty chairs, leave and come back later
         else {
             printf("[ST] Student %d is leaving and coming back later\n", id);
             sem_post(&mutex);
@@ -83,6 +87,7 @@ void* student(void* param) {
 void* teaching_assistant() {
     while (help_students < MAX_STUDENTS) {
         sem_wait(&mutex);
+        // if there are no students, sleep
         if (atomic_load(&waiting_students) <= 0) {
             ta_sleeping = 1;
             printf("[TA] TA is sleeping\n");
@@ -91,6 +96,7 @@ void* teaching_assistant() {
             // ta_sleeping = 0;
             printf("[TA] TA is waking up\n");
         }
+        // if there are students, call the next student
         else {
             printf("[TA] TA is available\n");
             turn = dequeue();
@@ -101,6 +107,7 @@ void* teaching_assistant() {
             sem_wait(&students);
         }
 
+        // help student
         printf("[TA] TA is helping student %d\n", turn);
         sleep(rand() % 5 + 1);
         printf("[TA] TA is done helping student %d\n", turn);
