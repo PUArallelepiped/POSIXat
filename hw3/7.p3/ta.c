@@ -53,6 +53,7 @@ void* student(void* param) {
         if (ta_sleeping == 1) {
             printf("[ST] Student %d is waking up TA\n", id);
             ta_sleeping = 0;
+            turn = id;
             sem_post(&students);
             sem_post(&mutex);
             break;
