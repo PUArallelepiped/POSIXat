@@ -28,7 +28,7 @@ void *customer(void *param) {
   parameters *params = (parameters *)param;
   int task_num = params->task_num;
   int req_times = 0;
-  int req_times_max = 10;
+  int req_times_max = 4;
   while (1) {
     int request[NUMBER_OF_RESOURCES];
     if (req_times < req_times_max) {
@@ -45,17 +45,17 @@ void *customer(void *param) {
     for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
       printf("%d ", available[i]);
     }
-    printf("\n");
+    printf(";");
     printf("Allocation: ");
     for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
       printf("%d ", allocation[task_num][i]);
     }
-    printf("\n");
+    printf(";");
     printf("Need: ");
     for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
       printf("%d ", need[task_num][i]);
     }
-    printf("\n");
+    printf(";");
     printf("Customer %d requesting: ", task_num);
     for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
       printf("%d ", request[i]);
@@ -69,12 +69,16 @@ void *customer(void *param) {
       printf("Customer %d request denied\n", task_num);
       req_times++;
     }
-    printf("\n");
     sem_post(&available_mutex);
 
     // sleep(2);
     int compelete = need[task_num][0] == 0 && need[task_num][1] == 0 &&
                     need[task_num][2] == 0 && need[task_num][3] == 0;
+
+    if (allocation[task_num][0] == 0 && allocation[task_num][1] == 0 &&
+        allocation[task_num][2] == 0 && allocation[task_num][3] == 0) {
+      continue;
+    }
     sem_wait(&available_mutex);
     int release[NUMBER_OF_RESOURCES];
     if (req_times >= req_times_max || compelete) {
@@ -86,27 +90,16 @@ void *customer(void *param) {
         release[i] = rand() % (allocation[task_num][i] + 1);
       }
     }
-    printf("Available: ");
-    for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
-      printf("%d ", available[i]);
-    }
-    printf("\n");
     printf("Customer %d releasing: ", task_num);
     for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
       printf("%d ", release[i]);
     }
     printf("\n");
     release_resources(task_num, release);
-    printf("Available: ");
-    for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
-      printf("%d ", available[i]);
-    }
-    printf("\n");
-    printf("\n");
 
     sem_post(&available_mutex);
     if (compelete) {
-      printf("Customer %d finished\n\n", task_num);
+      printf("Customer %d finished\n", task_num);
       break;
     }
   }
