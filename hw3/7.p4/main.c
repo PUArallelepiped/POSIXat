@@ -14,11 +14,11 @@ void *producer(void *param) {
     while (1) {
         /* sleep for a random period of time */
         sleep(rand() % 5);
-        item = rand();
+        item = rand() + 1;
         sem_wait(&empty);
         sem_wait(&mutex);
         if (insert_item(item))
-            fprintf(stderr, "cannot insert item");
+            fprintf(stderr, "cannot insert item\n");
         else
             printf("producer produced %d\n",item);
         sem_post(&mutex);
@@ -34,7 +34,7 @@ void *consumer(void *param) {
         /* sleep for a random period of time */
         sleep(rand() % 5);
         if (remove_item(&item))
-            fprintf(stderr, "cannot remove item");
+            fprintf(stderr, "cannot remove item\n");
         else
             printf("consumer consumed %d\n",item);
         sem_post(&mutex);
@@ -57,7 +57,7 @@ int main (int argc, char *argv[]) {
     consumerThread = (pthread_t *) malloc(consumerThreads * sizeof(pthread_t));
     init_buffer();
 
-    sem_init(&empty, 0, BUFFER_SIZE);
+    sem_init(&empty, 0, BUFFER_SIZE - 1);
     sem_init(&full, 0, 0);
     sem_init(&mutex, 0, 1);
 
