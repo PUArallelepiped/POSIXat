@@ -12,7 +12,7 @@
 #define EATING 2
 
 int state[N];
-pthread_cond_t cond;
+pthread_cond_t cond[N];
 pthread_mutex_t mutex;
 
 void print_dining_table() {
@@ -33,7 +33,7 @@ void test(int i) {
     if (state[i] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING) {
         state[i] = EATING;
         print_dining_table();
-        pthread_cond_signal(&cond);
+        pthread_cond_signal(&cond[i]);
     }
 }
 
@@ -43,7 +43,7 @@ void take_forks(int i) {
     print_dining_table();
     test(i);
     while (state[i] != EATING) {
-        pthread_cond_wait(&cond, &mutex);
+        pthread_cond_wait(&cond[i], &mutex);
     }
     pthread_mutex_unlock(&mutex);
 }
@@ -66,7 +66,6 @@ void *philosopher(void* arg) {
         printf("Philosopher %d is eating\n", i);
         sleep(rand() % 3 + 1);
         put_forks(i);
-        printf("Philosopher %d finished eating\n", i);
     }
 }
 
@@ -76,7 +75,9 @@ int main() {
     for (i = 0; i < N; i++) {
         state[i] = THINKING;
     }
-    pthread_cond_init(&cond, NULL);
+    for (i = 0; i < N; i++) {
+        pthread_cond_init(&cond[i], NULL);
+    }
     pthread_mutex_init(&mutex, NULL);
     for (i = 0; i < N; i++) {
         int *arg = (int *)malloc(sizeof(*arg));
