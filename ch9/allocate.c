@@ -128,12 +128,6 @@ void B_insert(struct Node **head_ref, int _available_space, int _process_id)
                 diff = _diff;
             }
         }
-        else if ((current->process_id == -1) && (new_node->available_space == current->available_space))
-        {
-            current->process_id = _process_id;
-            free(new_node);
-            return;
-        }
         perious = current;
         current = current->next;
     }
