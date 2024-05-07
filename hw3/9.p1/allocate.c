@@ -129,7 +129,7 @@ void F_insert(struct Node **head_ref, int _available_space, int _process_id)
         current = current->next;
     }
 
-    printf("no memory big enough to use");
+    printf("no memory big enough to use\n");
 }
 
 void B_insert(struct Node **head_ref, int _available_space, int _process_id)
@@ -180,7 +180,7 @@ void B_insert(struct Node **head_ref, int _available_space, int _process_id)
     }
     else
     {
-        printf("no memory big enough to use");
+        printf("no memory big enough to use\n");
     }
 }
 
@@ -194,8 +194,8 @@ void W_insert(struct Node **head_ref, int _available_space, int _process_id)
 
     struct Node *current = *head_ref;
     struct Node *perious = *head_ref;
-    struct Node *best = NULL;
-    struct Node *best_pre = NULL;
+    struct Node *worst = NULL;
+    struct Node *worst_pre = NULL;
     int MAX = -1;
     while (current != NULL)
     {
@@ -205,8 +205,8 @@ void W_insert(struct Node **head_ref, int _available_space, int _process_id)
             int _diff = current->available_space - new_node->available_space;
             if ((_diff > MAX))
             {
-                best_pre = perious;
-                best = current;
+                worst_pre = perious;
+                worst = current;
                 MAX = _diff;
             }
         }
@@ -215,25 +215,25 @@ void W_insert(struct Node **head_ref, int _available_space, int _process_id)
         current = current->next;
     }
 
-    if (best != NULL)
+    if (worst != NULL)
     {
         if (MAX == 0)
         {
-            best->process_id = _process_id;
+            worst->process_id = _process_id;
             free(new_node);
             return;
         }
-        if ((best_pre == best) && (best_pre == *head_ref))
+        if ((worst_pre == worst) && (worst_pre == *head_ref))
         {
-            sep_node(head_ref, &best, &new_node); // if is head
+            sep_node(head_ref, &worst, &new_node); // if is head
             return;
         }
 
-        sep_node(&best_pre, &best, &new_node);
+        sep_node(&worst_pre, &worst, &new_node);
     }
     else
     {
-        printf("no memory big enough to use");
+        printf("no memory big enough to use\n");
     }
 }
 
@@ -341,6 +341,12 @@ void C_compaction(struct Node **head_ref)
 int main(int argc, char *argv[])
 {
 
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s <memory size>\n", argv[0]);
+        return 1;
+    }
+
     struct Node *head;
     int inital_memory = atoi(argv[1]);
     init_memory(&head, inital_memory);
@@ -406,6 +412,7 @@ int main(int argc, char *argv[])
 
         if (strcmp(request, "X") == 0)
         {
+            // exit
             break;
         }
         // STAT_printList(&head);
