@@ -78,16 +78,16 @@ void combine_node(struct Node **first_ref, struct Node **second_ref)
 void conbine(struct Node **head_ref)
 {
     struct Node *current = *head_ref;
-    struct Node *perious = *head_ref;
+    struct Node *previous = *head_ref;
     while (current != NULL && current->next != NULL)
     {
-        perious = current;
+        previous = current;
         current = current->next;
 
-        if (perious->process_id == -1 && current->process_id == -1)
+        if (previous->process_id == -1 && current->process_id == -1)
         {
-            combine_node(&perious, &current);
-            current = perious;
+            combine_node(&previous, &current);
+            current = previous;
         }
     }
 }
@@ -101,20 +101,20 @@ void F_insert(struct Node **head_ref, int _available_space, int _process_id)
     new_node->next = NULL;
 
     struct Node *current = *head_ref;
-    struct Node *perious = *head_ref;
+    struct Node *previous = *head_ref;
 
     while (current != NULL)
     {
 
         if ((current->process_id == -1) && (new_node->available_space < current->available_space))
         {
-            if (perious == current && perious == *head_ref)
+            if (previous == current && previous == *head_ref)
             {
                 sep_node(head_ref, &current, &new_node); // if is head
             }
             else
             {
-                sep_node(&perious, &current, &new_node);
+                sep_node(&previous, &current, &new_node);
             };
             return;
         }
@@ -125,7 +125,7 @@ void F_insert(struct Node **head_ref, int _available_space, int _process_id)
 
             return;
         }
-        perious = current;
+        previous = current;
         current = current->next;
     }
 
@@ -141,7 +141,7 @@ void B_insert(struct Node **head_ref, int _available_space, int _process_id)
     new_node->next = NULL;
 
     struct Node *current = *head_ref;
-    struct Node *perious = *head_ref;
+    struct Node *previous = *head_ref;
     struct Node *best = NULL;
     struct Node *best_pre = NULL;
     int diff = INT_MAX;
@@ -154,12 +154,12 @@ void B_insert(struct Node **head_ref, int _available_space, int _process_id)
 
             if ((_diff < diff))
             {
-                best_pre = perious;
+                best_pre = previous;
                 best = current;
                 diff = _diff;
             }
         }
-        perious = current;
+        previous = current;
         current = current->next;
     }
 
@@ -193,7 +193,7 @@ void W_insert(struct Node **head_ref, int _available_space, int _process_id)
     new_node->next = NULL;
 
     struct Node *current = *head_ref;
-    struct Node *perious = *head_ref;
+    struct Node *previous = *head_ref;
     struct Node *worst = NULL;
     struct Node *worst_pre = NULL;
     int MAX = -1;
@@ -205,13 +205,13 @@ void W_insert(struct Node **head_ref, int _available_space, int _process_id)
             int _diff = current->available_space - new_node->available_space;
             if ((_diff > MAX))
             {
-                worst_pre = perious;
+                worst_pre = previous;
                 worst = current;
                 MAX = _diff;
             }
         }
 
-        perious = current;
+        previous = current;
         current = current->next;
     }
 
@@ -279,7 +279,7 @@ void STAT_printList(struct Node **node)
 void C_compaction(struct Node **head_ref)
 {
     struct Node *current = *head_ref;
-    struct Node *perious = *head_ref;
+    struct Node *previous = *head_ref;
     struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
 
     int count = 0;
@@ -308,13 +308,13 @@ void C_compaction(struct Node **head_ref)
         {
             all_hole += current->available_space;
 
-            if (perious == current && perious == *head_ref)
+            if (previous == current && previous == *head_ref)
             {
                 *head_ref = current->next;
             }
             else
             {
-                perious->next = current->next;
+                previous->next = current->next;
             }
 
             struct Node *rellocate = current->next;
@@ -328,14 +328,14 @@ void C_compaction(struct Node **head_ref)
             }
 
             free(current);
-            current = perious;
+            current = previous;
         }
-        perious = current;
+        previous = current;
         current = current->next;
     }
 
-    hole_node(&new_node, all_hole, perious->end_address + 1);
-    perious->next = new_node;
+    hole_node(&new_node, all_hole, previous->end_address + 1);
+    previous->next = new_node;
 }
 
 int main(int argc, char *argv[])
